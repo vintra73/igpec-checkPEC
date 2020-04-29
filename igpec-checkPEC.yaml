@@ -1,0 +1,125 @@
+swagger: "2.0"
+info:
+  description: "La presente API mette a disposizione uno strumento pubblico per verificare il corretto funzionamento di una casella di tipo PEC. \n\n
+                Per “indirizzo di PEC correttamente funzionante” si intende un indirizzo al quale il Gestore di competenza ha conferito tutte le abilitazioni necessarie per la completa operatività dello stesso."
+
+  version: "1.0.0"
+  title: "IGPEC-APIVerificaPEC"
+
+host: "igpec.agid.gov.it"
+basePath: "/cdpec/v1"
+
+schemes:
+- "https"
+
+paths:
+  /{domain}/{localpart}:
+    get:
+      description: "Verifica lo stato del funzionamento di una PEC"
+      
+      produces:
+      - "application/json"
+      
+      parameters:
+      - name: "domain"
+        in: "path"
+        description: "domain della PEC da verificare"
+        required: true
+        type: "string"
+        pattern: '^\w{1,}([\.-]{0,1}\w+){0,}(\.\w{2,})$'
+      - name: "localpart"
+        in: "path"
+        description: "localpart della PEC da verificare"
+        required: true
+        type: "string"
+        pattern: '^\w{1,}([\.-]?\w+){1,}$'
+
+      
+      responses:
+        "200":
+          description: "OK: operazione conclusa con successo"
+          schema:
+            $ref: "#/definitions/Response"
+        "400":
+          description: "BAD REQUEST: errore sintassi, per verificare la PEC localpart@domain la sintassi corretta è /{domain}/{localpart}"
+        "401":
+          description: "UNAUTHORIZED: appid non trovato o apikey non corrisponde a appid"
+        "404":
+          description: "NOT FOUND: PEC non presente"
+        "421":
+          description: "MISDIRECTED REQUEST: domino mail non PEC"
+        "422":
+          description: "UNPROCESSABLE ENTITY: formato domain e/o localpart errato: \n
+                          (i) domain pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,}) \n 
+                          (ii) localpart patter \\w{1,}([\\.-]?\\w+){1,}"
+        "500":
+          description: "INTERNAL SERVER ERROR: errore del server"
+          
+  /apikey:
+    put:
+      description: "Genera una nuova apikey"
+      
+      produces:
+      - "application/json"
+      
+      responses:
+        "200":
+          description: "operazione conclusa con successo"
+          schema:
+            $ref: "#/definitions/ApiKey"            
+        "400":
+          description: "BAD REQUEST: errore sintassi, la sintassi corretta è /apikey"
+        "401":
+          description: "UNAUTHORIZED: appid non trovato o apikey non corrisponde a appid"
+        "500":
+          description: "INTERNAL SERVER ERROR: errore del server" 
+ 
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "X-API-KEY"
+    in: "header"
+  app_id:
+      type: "apiKey"
+      name: "X-APP-ID"
+      in: "header"
+      
+
+security:
+        - app_id: []
+          api_key: []
+    
+definitions:
+  Response:
+    properties:
+      email:
+        description: "PEC di cui è stata richiesta la verifica dello stato di funzionamento"
+        type: string
+        format: email
+      esito:
+        description: "stato di funzionamento della PEC"
+        type: string
+        enum: [OK, KO]
+      tipo:
+        description: "tipo della PEC verificato"
+        type: string
+        enum: [PA, Privato]
+    example: 
+      email: "mailbox@pec.it"
+      esito: "OK"
+      tipo: "Privato"
+    required:  
+      - email
+      - esito
+      - tipo
+      
+  ApiKey:
+    properties:
+      apiKey: 
+        description: "apikey generata"
+        type: string
+        format: uidd
+    example: 
+      apikey: "zaCELgL. 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx"
+    required:  
+      - apiKey
