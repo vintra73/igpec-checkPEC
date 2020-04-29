@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "La presente API mette a disposizione uno strumento pubblico per verificare il corretto funzionamento di una casella di tipo PEC. \n\n
+  description: "L'API mette a disposizione uno strumento pubblico per verificare il corretto funzionamento di una casella di tipo PEC. \n\n
                 Per “indirizzo di PEC correttamente funzionante” si intende un indirizzo al quale il Gestore di competenza ha conferito tutte le abilitazioni necessarie per la completa operatività dello stesso."
 
   version: "1.0.0"
@@ -87,7 +87,7 @@ securityDefinitions:
 
 security:
         - app_id: []
-          api_key: []
+        - api_key: []
     
 definitions:
   Response:
