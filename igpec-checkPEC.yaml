@@ -44,21 +44,22 @@ paths:
             $ref: "#/definitions/Response"
         "400":
           description: "BAD REQUEST: \n
-                        - code: 400.001, messaggage: path atteso /{domain}/{localpart} \n
-                        - code: 400.002, messaggage: domain pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,})\n
-                        - code: 400.003, messaggage: localpart patter \\w{1,}([\\.-]?\\w+){1,}                                    "
+                        - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /{domain}/{localpart}, status:400 \n
+                        - type: www.igpec.agid.gov.it/errorcode/domain.pattern, title: errore nel {domain}, detail: {domain} pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,}), status:400 \n
+                        - type: www.igpec.agid.gov.it/errorcode/localpart.pattern, title: errore nel {localpart}, detail: {localpart} pattern \\w{1,}([\\.-]?\\w+){1,}, status:400 "
           schema:
             $ref: "#/definitions/Error"
         "401":
           description: "UNAUTHORIZED: \n
-                        - code: 401.001, messaggage: appid not present \n
-                        - code: 401.002, messaggage: apikey wrong"
+                        - type: www.igpec.agid.gov.it/errorcode/appod.notpresent, title: apid not present, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, status:401"                    
           schema:
             $ref: "#/definitions/Error"
         "404":
           description: "NOT FOUND: \n
-                        - code: 404.001, messaggage: {domain} not found \n
-                        - code: 404.002, messaggage: {localpart} not found"
+                        - type: www.igpec.agid.gov.it/errorcode/domain.notfound, title: {domain} not found, status:404 \n
+                        - type: www.igpec.agid.gov.it/errorcode/localpart.notfound, title: {localpart} not found, status:404"
           schema:
             $ref: "#/definitions/Error"
 
@@ -79,13 +80,14 @@ paths:
             $ref: "#/definitions/ApiKey"            
         "400":
           description: "BAD REQUEST: \n
-                        - code: 400.004, messaggage: path atteso /generate-apikey"
+                        - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /generate-apikey, status:400"
           schema:
             $ref: "#/definitions/Error"
         "401":
           description: "UNAUTHORIZED: \n
-                        - code: 401.001, messaggage: appid not present \n
-                        - code: 401.002, messaggage: apikey wrong"
+                        - type: www.igpec.agid.gov.it/errorcode/appod.notpresent, title: apid not present, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, status:401"
           schema:
             $ref: "#/definitions/Error"
 
@@ -145,16 +147,27 @@ definitions:
 
   Error:
     properties:
-      code:
-        description: "Codice errore"
+      type:
+        description: "uri che identifica il problema"
         type: string
-        pattern: '\[0-9]{3}\.[0-9]{3}$'
-      message:
-        description: "Descrizione errore"
+        format: uri
+      title:
+        description: "Breve descrizione dello specifico problema verificatosi"
         type: string
+      detail:
+        description: "Descrizione di dettaglio dello specifico problema verificatosi"
+        type: string
+      status:
+        description: "HTTP status code generato dal server"
+        type: string
+        pattern: '^\[0-9]{3}$'
     example:
-      code: "000.000"
-      message: "descrizione errore"
+      type: "www.igpec.agid.gov.it/errorcode/badpath"
+      title: "errore del path"
+      detail: "path atteso /{domain}/{localpart}"
+      status: "400"
     required:
-      - code
-      - message
+      - type
+      - title
+      - status
+      
