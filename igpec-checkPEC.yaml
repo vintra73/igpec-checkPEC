@@ -19,7 +19,7 @@ tags:
 paths:
   /{domain}/{localpart}:
     get:
-      description: "Verifica lo stato del funzionamento di una PEC"      
+      description: "Verifica lo stato del funzionamento di una PEC {localpart}@{domain} "      
       tags:
         - "base"
       produces:
@@ -39,23 +39,31 @@ paths:
         pattern: '^\w{1,}([\.-]?\w+){1,}$'      
       responses:
         "200":
-          description: "OK: operazione conclusa con successo"
+          description: "OK"
           schema:
             $ref: "#/definitions/Response"
         "400":
-          description: "BAD REQUEST: errore sintassi, per verificare la PEC localpart@domain la sintassi corretta è /{domain}/{localpart}"
+          description: "BAD REQUEST: \n
+                        - code: 400.001, messaggage: path atteso /{domain}/{localpart} \n
+                        - code: 400.002, messaggage: domain pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,})\n
+                        - code: 400.003, messaggage: localpart patter \\w{1,}([\\.-]?\\w+){1,}                                    "
+          schema:
+            $ref: "#/definitions/Error"
         "401":
-          description: "UNAUTHORIZED: appid non trovato o apikey non corrisponde a appid"
+          description: "UNAUTHORIZED: \n
+                        - code: 401.001, messaggage: appid not present \n
+                        - code: 401.002, messaggage: apikey wrong"
+          schema:
+            $ref: "#/definitions/Error"
         "404":
-          description: "NOT FOUND: PEC non presente"
-        "421":
-          description: "MISDIRECTED REQUEST: domino mail non PEC"
-        "422":
-          description: "UNPROCESSABLE ENTITY: formato domain e/o localpart errato: \n
-                          (i) domain pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,}) \n 
-                          (ii) localpart patter \\w{1,}([\\.-]?\\w+){1,}"
-        "500":
-          description: "INTERNAL SERVER ERROR: errore del server"
+          description: "NOT FOUND: \n
+                        - code: 404.001, messaggage: {domain} not found \n
+                        - code: 404.002, messaggage: {localpart} not found"
+          schema:
+            $ref: "#/definitions/Error"
+
+        default:
+            description: "Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/"
           
   /generate-apikey:
     put:
@@ -66,27 +74,35 @@ paths:
       - "application/json"
       responses:
         "200":
-          description: "operazione conclusa con successo"
+          description: "OK"
           schema:
             $ref: "#/definitions/ApiKey"            
         "400":
-          description: "BAD REQUEST: errore sintassi, la sintassi corretta è /generate-apikey"
+          description: "BAD REQUEST: \n
+                        - code: 400.004, messaggage: path atteso /generate-apikey"
+          schema:
+            $ref: "#/definitions/Error"
         "401":
-          description: "UNAUTHORIZED: appid non trovato o apikey non corrisponde a appid"
-        "500":
-          description: "INTERNAL SERVER ERROR: errore del server" 
+          description: "UNAUTHORIZED: \n
+                        - code: 401.001, messaggage: appid not present \n
+                        - code: 401.002, messaggage: apikey wrong"
+          schema:
+            $ref: "#/definitions/Error"
+
+        default:
+            description: "Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/"
  
 securityDefinitions:
   api_key:
     type: "apiKey"
     name: "X-API-KEY"
     in: "header"
-    description: "header utilizzato per indicare la apikey del client"
+    description: "HEADER utilizzato per indicare la apikey del client"
   app_id:
       type: "apiKey"
       name: "X-APP-ID"
       in: "header"
-      description: "header utilizzato per indicare l'identità del client"      
+      description: "HEADER utilizzato per indicare l'identità del client"      
 
 security:
         - app_id: []
@@ -100,11 +116,11 @@ definitions:
         type: string
         format: email
       esito:
-        description: "stato di funzionamento della PEC"
+        description: "Stato di funzionamento della PEC"
         type: string
         enum: [OK, KO]
       tipo:
-        description: "tipo della PEC verificato"
+        description: "Tipo della PEC verificato"
         type: string
         enum: [PA, Privato]
     example: 
@@ -126,3 +142,19 @@ definitions:
       apikey: "zaCELgL. 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx"
     required:  
       - apiKey
+
+  Error:
+    properties:
+      code:
+        description: "Codice errore"
+        type: string
+        pattern: '\[0-9]{3}\.[0-9]{3}$'
+      message:
+        description: "Descrizione errore"
+        type: string
+    example:
+      code: "000.000"
+      message: "descrizione errore"
+    required:
+      - code
+      - message
