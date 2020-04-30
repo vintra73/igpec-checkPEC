@@ -70,7 +70,7 @@ paths:
           schema:
             $ref: "#/definitions/ApiKey"            
         "400":
-          description: "BAD REQUEST: errore sintassi, la sintassi corretta è /apikey"
+          description: "BAD REQUEST: errore sintassi, la sintassi corretta è /generate-apikey"
         "401":
           description: "UNAUTHORIZED: appid non trovato o apikey non corrisponde a appid"
         "500":
