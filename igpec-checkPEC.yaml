@@ -55,7 +55,7 @@ paths:
         "500":
           description: "INTERNAL SERVER ERROR: errore del server"
           
-  /apikey:
+  /generate-apikey:
     put:
       description: "Genera una nuova apikey"
       
