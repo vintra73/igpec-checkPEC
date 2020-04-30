@@ -18,16 +18,12 @@ tags:
 
 paths:
   /{domain}/{localpart}:
-
     get:
-      description: "Verifica lo stato del funzionamento di una PEC"
-      
+      description: "Verifica lo stato del funzionamento di una PEC"      
       tags:
         - "base"
-
       produces:
-      - "application/json"
-      
+      - "application/json"      
       parameters:
       - name: "domain"
         in: "path"
@@ -40,9 +36,7 @@ paths:
         description: "localpart della PEC da verificare"
         required: true
         type: "string"
-        pattern: '^\w{1,}([\.-]?\w+){1,}$'
-
-      
+        pattern: '^\w{1,}([\.-]?\w+){1,}$'      
       responses:
         "200":
           description: "OK: operazione conclusa con successo"
@@ -66,13 +60,10 @@ paths:
   /generate-apikey:
     put:
       description: "Genera una nuova apikey"
-
       tags:
         - "utility"
-      
       produces:
       - "application/json"
-      
       responses:
         "200":
           description: "operazione conclusa con successo"
@@ -95,8 +86,7 @@ securityDefinitions:
       type: "apiKey"
       name: "X-APP-ID"
       in: "header"
-      description: "header utilizzato per indicare l'identità del client"
-      
+      description: "header utilizzato per indicare l'identità del client"      
 
 security:
         - app_id: []
