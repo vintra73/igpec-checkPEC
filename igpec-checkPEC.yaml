@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  description: "L'API mette a disposizione uno strumento pubblico per verificare il corretto funzionamento di una casella di tipo PEC. \n\n
-                Per “indirizzo di PEC correttamente funzionante” si intende un indirizzo al quale il Gestore di competenza ha conferito tutte le abilitazioni necessarie per la completa operatività dello stesso."
-
+  description: "API per **verificare** se una *casella di PEC* è correttamente funzionante. \n\n
+                Per *casella di PEC* correttamente funzionante si intende un indirizzo al quale il Gestore di competenza ha conferito tutte le abilitazioni necessarie per la completa operatività dello stesso."
+            
   version: "1.0.0"
   title: "IGPEC-APIVerificaPEC"
 
@@ -12,11 +12,19 @@ basePath: "/cdpec/v1"
 schemes:
 - "https"
 
+tags:
+  - name: "base"
+  - name: "utility"
+
 paths:
   /{domain}/{localpart}:
+
     get:
       description: "Verifica lo stato del funzionamento di una PEC"
       
+      tags:
+        - "base"
+
       produces:
       - "application/json"
       
@@ -58,6 +66,9 @@ paths:
   /generate-apikey:
     put:
       description: "Genera una nuova apikey"
+
+      tags:
+        - "utility"
       
       produces:
       - "application/json"
@@ -79,10 +90,12 @@ securityDefinitions:
     type: "apiKey"
     name: "X-API-KEY"
     in: "header"
+    description: "header utilizzato per indicare la apikey del client"
   app_id:
       type: "apiKey"
       name: "X-APP-ID"
       in: "header"
+      description: "header utilizzato per indicare l'identità del client"
       
 
 security:
