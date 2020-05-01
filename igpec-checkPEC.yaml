@@ -41,7 +41,7 @@ paths:
         "200":
           description: "OK"
           schema:
-            $ref: "#/definitions/Response"
+            $ref: "#/definitions/PECstatus"
         "400":
           description: "BAD REQUEST: \n
                         - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /{domain}/{localpart}, status:400 \n
@@ -111,10 +111,10 @@ security:
         - api_key: []
     
 definitions:
-  Response:
+  PECstatus:
     properties:
       email:
-        description: "PEC di cui è stata richiesta la verifica dello stato di funzionamento"
+        description: "PEC {localpart}@{domain} di cui è stata richiesta la verifica dello stato di funzionamento"
         type: string
         format: email
       esito:
