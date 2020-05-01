@@ -51,9 +51,9 @@ paths:
             $ref: "#/definitions/Error"
         "401":
           description: "UNAUTHORIZED: \n
-                        - type: www.igpec.agid.gov.it/errorcode/appod.notpresent, title: apid not present, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, status:401"                    
+                        - type: www.igpec.agid.gov.it/errorcode/appid.notpresent, title: appid not present, detail: atteso header X-APP-ID, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, detail: atteso header X-API-KEY, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, detail: apikey (header X-API-KEY) non corrisponde appid (header X-APP-ID), status:401"
           schema:
             $ref: "#/definitions/Error"
         "404":
@@ -85,9 +85,9 @@ paths:
             $ref: "#/definitions/Error"
         "401":
           description: "UNAUTHORIZED: \n
-                        - type: www.igpec.agid.gov.it/errorcode/appod.notpresent, title: apid not present, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, status:401"
+                        - type: www.igpec.agid.gov.it/errorcode/appid.notpresent, title: appid not present, detail: atteso header X-APP-ID, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, detail: atteso header X-API-KEY, status:401 \n
+                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, detail: apikey (header X-API-KEY) non corrisponde appid (header X-APP-ID), status:401"
           schema:
             $ref: "#/definitions/Error"
 
