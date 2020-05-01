@@ -7,7 +7,7 @@ info:
   title: "IGPEC-APIVerificaPEC"
 
 host: "igpec.agid.gov.it"
-basePath: "/cdpec/v1"
+basePath: "/checkpec/rest/v1_0_0"
 
 schemes:
 - "https"
@@ -19,7 +19,7 @@ tags:
 paths:
   /{domain}/{localpart}:
     get:
-      description: "Verifica lo stato del funzionamento di una PEC {localpart}@{domain} "      
+      description: "Verifica lo stato del funzionamento di una PEC {localpart}@{domain}"      
       tags:
         - "base"
       produces:
@@ -170,4 +170,3 @@ definitions:
       - type
       - title
       - status
-      
