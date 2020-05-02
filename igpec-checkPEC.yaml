@@ -1,174 +1,191 @@
-swagger: "2.0"
+openapi: 3.0.1
+
 info:
-  description: "API per **verificare** se una *casella di PEC* è correttamente funzionante. \n\n
+  title: IGPEC-APIVerificaPEC
+  description: "API per **verificare** se una *casella di PEC* è correttamente funzionante. \n\n 
                 Per *casella di PEC* correttamente funzionante si intende un indirizzo al quale il Gestore di competenza ha conferito tutte le abilitazioni necessarie per la completa operatività dello stesso."
-            
-  version: "1.0.0"
-  title: "IGPEC-APIVerificaPEC"
+  version: 1.0.0
 
-host: "igpec.agid.gov.it"
-basePath: "/checkpec/rest/v1_0_0"
+servers:
+- url: https://igpec.agid.gov.it/checkpec/rest/v1.0.0
 
-schemes:
-- "https"
+security:
+- app_id: []
+- api_key: []
 
 tags:
-  - name: "base"
-  - name: "utility"
+- name: base
+- name: utility
 
 paths:
   /{domain}/{localpart}:
     get:
-      description: "Verifica lo stato del funzionamento di una PEC {localpart}@{domain}"      
       tags:
-        - "base"
-      produces:
-      - "application/json"      
+      - base
+      description: Verifica lo stato del funzionamento di una PEC {localpart}@{domain}
       parameters:
-      - name: "domain"
-        in: "path"
-        description: "domain della PEC da verificare"
+      - name: domain
+        in: path
+        description: domain della PEC da verificare
         required: true
-        type: "string"
-        pattern: '^\w{1,}([\.-]{0,1}\w+){0,}(\.\w{2,})$'
-      - name: "localpart"
-        in: "path"
-        description: "localpart della PEC da verificare"
+        schema:
+          pattern: ^\w{1,}([\.-]{0,1}\w+){0,}(\.\w{2,})$
+          type: string
+      - name: localpart
+        in: path
+        description: localpart della PEC da verificare
         required: true
-        type: "string"
-        pattern: '^\w{1,}([\.-]?\w+){1,}$'      
+        schema:
+          pattern: ^\w{1,}([\.-]?\w+){1,}$
+          type: string
       responses:
-        "200":
-          description: "OK"
-          schema:
-            $ref: "#/definitions/PECstatus"
-        "400":
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PECstatus'
+        400:
           description: "BAD REQUEST: \n
                         - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /{domain}/{localpart}, status:400 \n
                         - type: www.igpec.agid.gov.it/errorcode/domain.pattern, title: errore nel {domain}, detail: {domain} pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,}), status:400 \n
                         - type: www.igpec.agid.gov.it/errorcode/localpart.pattern, title: errore nel {localpart}, detail: {localpart} pattern \\w{1,}([\\.-]?\\w+){1,}, status:400 "
-          schema:
-            $ref: "#/definitions/Error"
-        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
           description: "UNAUTHORIZED: \n
                         - type: www.igpec.agid.gov.it/errorcode/appid.notpresent, title: appid not present, detail: atteso header X-APP-ID, status:401 \n
                         - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, detail: atteso header X-API-KEY, status:401 \n
                         - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, detail: apikey (header X-API-KEY) non corrisponde appid (header X-APP-ID), status:401"
-          schema:
-            $ref: "#/definitions/Error"
-        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
           description: "NOT FOUND: \n
                         - type: www.igpec.agid.gov.it/errorcode/domain.notfound, title: {domain} not found, status:404 \n
                         - type: www.igpec.agid.gov.it/errorcode/localpart.notfound, title: {localpart} not found, status:404"
-          schema:
-            $ref: "#/definitions/Error"
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-            description: "Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/"
-          
+          description: Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/
+          content: {}
+
   /generate-apikey:
     put:
-      description: "Genera una nuova apikey"
       tags:
-        - "utility"
-      produces:
-      - "application/json"
+      - utility
+      description: Genera una nuova apikey
       responses:
-        "200":
-          description: "OK"
-          schema:
-            $ref: "#/definitions/ApiKey"            
-        "400":
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        400:
           description: "BAD REQUEST: \n
                         - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /generate-apikey, status:400"
-          schema:
-            $ref: "#/definitions/Error"
-        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
           description: "UNAUTHORIZED: \n
                         - type: www.igpec.agid.gov.it/errorcode/appid.notpresent, title: appid not present, detail: atteso header X-APP-ID, status:401 \n
                         - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, detail: atteso header X-API-KEY, status:401 \n
                         - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, detail: apikey (header X-API-KEY) non corrisponde appid (header X-APP-ID), status:401"
-          schema:
-            $ref: "#/definitions/Error"
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-            description: "Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/"
- 
-securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "X-API-KEY"
-    in: "header"
-    description: "HEADER utilizzato per indicare la apikey del client"
-  app_id:
-      type: "apiKey"
-      name: "X-APP-ID"
-      in: "header"
-      description: "HEADER utilizzato per indicare l'identità del client"      
+          description: Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/
+          content: {}
 
-security:
-        - app_id: []
-        - api_key: []
-    
-definitions:
-  PECstatus:
-    properties:
-      email:
-        description: "PEC {localpart}@{domain} di cui è stata richiesta la verifica dello stato di funzionamento"
-        type: string
-        format: email
-      esito:
-        description: "Stato di funzionamento della PEC"
-        type: string
-        enum: [OK, KO]
-      tipo:
-        description: "Tipo della PEC verificato"
-        type: string
-        enum: [PA, Privato]
-    example: 
-      email: "mailbox@pec.it"
-      esito: "OK"
-      tipo: "Privato"
-    required:  
+components:
+  schemas:
+    PECstatus:
+      required:
       - email
       - esito
       - tipo
-      
-  ApiKey:
-    properties:
-      apiKey: 
-        description: "apikey generata"
-        type: string
-        format: uidd
-    example: 
-      apikey: "zaCELgL. 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx"
-    required:  
-      - apiKey
+      type: object
+      properties:
+        email:
+          type: string
+          description: PEC {localpart}@{domain} di cui è stata richiesta la verifica dello stato di funzionamento
+          format: email
+        esito:
+          type: string
+          description: Stato di funzionamento della PEC
+          enum:
+          - OK
+          - KO
+        tipo:
+          type: string
+          description: Tipo della PEC verificato
+          enum:
+          - PA
+          - Privato
+      example:
+        email: mailbox@pec.it
+        esito: OK
+        tipo: Privato
 
-  Error:
-    properties:
-      type:
-        description: "uri che identifica il problema"
-        type: string
-        format: uri
-      title:
-        description: "Breve descrizione dello specifico problema verificatosi"
-        type: string
-      detail:
-        description: "Descrizione di dettaglio dello specifico problema verificatosi"
-        type: string
-      status:
-        description: "HTTP status code generato dal server"
-        type: integer
-        format: int32    
-        maximum: 600
-        minimum: 100    
-    example:
-      type: "www.igpec.agid.gov.it/errorcode/badpath"
-      title: "errore del path"
-      detail: "path atteso /{domain}/{localpart}"
-      status: 400
-    required:
-      - type
-      - title
+    ApiKey:
+      required:
+      - apiKey
+      type: object
+      properties:
+        apiKey:
+          type: string
+          description: apikey generata
+          format: uidd
+      example:
+        apikey: zaCELgL. 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx
+
+    Error:
+      required:
       - status
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: uri che identifica il problema
+          format: uri
+        title:
+          type: string
+          description: Breve descrizione dello specifico problema verificatosi
+        detail:
+          type: string
+          description: Descrizione di dettaglio dello specifico problema verificatosi
+        status:
+          maximum: 6E+2
+          minimum: 1E+2
+          type: integer
+          description: HTTP status code generato dal server
+          format: int32
+      example:
+        type: www.igpec.agid.gov.it/errorcode/badpath
+        title: errore del path
+        detail: path atteso /{domain}/{localpart}
+        status: 400
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      description: HEADER utilizzato per indicare la apikey del client
+      name: X-API-KEY
+      in: header
+    app_id:
+      type: apiKey
+      description: HEADER utilizzato per indicare l'identità del client
+      name: X-APP-ID
+      in: header
