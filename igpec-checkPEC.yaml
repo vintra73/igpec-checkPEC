@@ -159,13 +159,15 @@ definitions:
         type: string
       status:
         description: "HTTP status code generato dal server"
-        type: string
-        pattern: '^\[0-9]{3}$'
+        type: integer
+        format: int32    
+        maximum: 600
+        minimum: 100    
     example:
       type: "www.igpec.agid.gov.it/errorcode/badpath"
       title: "errore del path"
       detail: "path atteso /{domain}/{localpart}"
-      status: "400"
+      status: 400
     required:
       - type
       - title
