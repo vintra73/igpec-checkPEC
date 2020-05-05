@@ -167,8 +167,8 @@ components:
           type: string
           description: Descrizione di dettaglio dello specifico problema verificatosi
         status:
-          maximum: 6E+2
-          minimum: 1E+2
+          maximum: 600
+          minimum: 100
           type: integer
           description: HTTP status code generato dal server
           format: int32
