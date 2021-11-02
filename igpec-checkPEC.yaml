@@ -114,17 +114,17 @@ components:
           maximum: 600
           minimum: 100
           type: integer
-          description: HTTP status code generato dal server
+          description: HTTP status code generato per l'errore verificatosi
           format: int32        
         error:
           type: string
-          description: Tipologia dell'errore rilevato
+          description: Tipologia dell'errore verificatosi
         message:
           type: string
-          description: Messaggio per specifico errore verificatosi
+          description: Messaggio specifico per errore verificatosi
         path:
           type: string
-          description: Riferimento al path per cui è stato generato l'errore  
+          description: Riferimento al path per cui si è verificato l'errore  
         
       example:
         timestamp: 2020-05-05T10:55:18.383+0000
