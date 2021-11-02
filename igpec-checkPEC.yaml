@@ -46,59 +46,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/PECstatus'
         400:
-          description: "BAD REQUEST: \n
-                        - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /{domain}/{localpart}, status:400 \n
-                        - type: www.igpec.agid.gov.it/errorcode/domain.pattern, title: errore nel {domain}, detail: {domain} pattern \\w{1,}([\\.-]{0,1}\\w+){0,}(\\.\\w{2,}), status:400 \n
-                        - type: www.igpec.agid.gov.it/errorcode/localpart.pattern, title: errore nel {localpart}, detail: {localpart} pattern \\w{1,}([\\.-]?\\w+){1,}, status:400 "
+          description: "BAD REQUEST"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         401:
-          description: "UNAUTHORIZED: \n
-                        - type: www.igpec.agid.gov.it/errorcode/appid.notpresent, title: appid not present, detail: atteso header X-APP-ID, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, detail: atteso header X-API-KEY, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, detail: apikey (header X-API-KEY) non corrisponde appid (header X-APP-ID), status:401"
+          description: "UNAUTHORIZED"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         404:
-          description: "NOT FOUND: \n
-                        - type: www.igpec.agid.gov.it/errorcode/domain.notfound, title: {domain} not found, status:404 \n
-                        - type: www.igpec.agid.gov.it/errorcode/localpart.notfound, title: {localpart} not found, status:404"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        default:
-          description: Gli HTTP state codes non indicati hanno un comportamento conforme alle indicazioni riportate in https://httpstatuses.com/
-          content: {}
-
-  /generate-apikey:
-    put:
-      tags:
-      - utility
-      description: Genera una nuova apikey
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiKey'
-        400:
-          description: "BAD REQUEST: \n
-                        - type: www.igpec.agid.gov.it/errorcode/badpath, title: errore del path, detail: path atteso /generate-apikey, status:400"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        401:
-          description: "UNAUTHORIZED: \n
-                        - type: www.igpec.agid.gov.it/errorcode/appid.notpresent, title: appid not present, detail: atteso header X-APP-ID, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.notpresent, title: apikey not present, detail: atteso header X-API-KEY, status:401 \n
-                        - type: www.igpec.agid.gov.it/errorcode/apikey.wrong, title: apikey errata, detail: apikey (header X-API-KEY) non corrisponde appid (header X-APP-ID), status:401"
+          description: "NOT FOUND"
           content:
             application/json:
               schema:
@@ -135,48 +95,43 @@ components:
       example:
         email: mailbox@pec.it
         esito: OK
-        tipo: Privato
-
-    ApiKey:
-      required:
-      - apiKey
-      type: object
-      properties:
-        apiKey:
-          type: string
-          description: apikey generata
-          format: uidd
-      example:
-        apikey: zaCELgL. 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx
+        tipo: Privato    
 
     Error:
       required:
+      - timestamp
       - status
-      - title
-      - type
+      - error
+      - message
+      - path
       type: object
       properties:
-        type:
+        timestamp:
           type: string
-          description: uri che identifica il problema
-          format: uri
-        title:
-          type: string
-          description: Breve descrizione dello specifico problema verificatosi
-        detail:
-          type: string
-          description: Descrizione di dettaglio dello specifico problema verificatosi
+          description: timestamp dell'errore
+          format: date-time
         status:
           maximum: 600
           minimum: 100
           type: integer
           description: HTTP status code generato dal server
-          format: int32
+          format: int32        
+        error:
+          type: string
+          description: Tipologia dell'errore rilevato
+        message:
+          type: string
+          description: Messaggio per specifico errore verificatosi
+        path:
+          type: string
+          description: Riferimento al path per cui è stato generato l'errore  
+        
       example:
-        type: www.igpec.agid.gov.it/errorcode/badpath
-        title: errore del path
-        detail: path atteso /{domain}/{localpart}
+        timestamp: 2020-05-05T10:55:18.383+0000
         status: 400
+        error: Bad request
+        message: Sintassi non valida del domain o del localpart
+        path: /test-pec.it/test-pec
 
   securitySchemes:
     api_key:
